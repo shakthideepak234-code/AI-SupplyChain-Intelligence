@@ -1,16 +1,25 @@
 
-import asyncio
-
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from backend.agents.supply_chain_agent import create_supply_chain_agent
-
 
 app = FastAPI(
     title="AI Supply Chain Intelligence API",
     description="API for supply chain demand intelligence",
     version="1.0.0"
+)
+
+# Allow Vercel frontend to access the Render backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://ai-supply-chain-intelligence-fronte.vercel.app"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -28,7 +37,6 @@ def home():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
-
 
 
 @app.post("/chat")
